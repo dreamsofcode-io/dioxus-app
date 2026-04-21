@@ -15,7 +15,9 @@ COPY tailwind.css ./tailwind.css
 RUN DIOXUS_VERSION="$(awk '/name = "dioxus"/ { getline; sub(/^version = "/, "", $0); sub(/"$/, "", $0); print $0; exit }' Cargo.lock)" \
     && cargo install dioxus-cli --version "${DIOXUS_VERSION}" --locked
 
-RUN dx build --release --platform web --fullstack --features server --locked
+RUN dx build --release --platform web --fullstack --locked \
+    @server --platform server --features server \
+    @client --platform web --no-default-features --features web
 
 FROM debian:bookworm-slim AS runtime
 
